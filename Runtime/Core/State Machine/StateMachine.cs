@@ -102,6 +102,7 @@ namespace Popieyes.AI
                 _currentState = newState;
                 _currentState.OnEnter();
             }
+            else Debug.LogError($"{name}'s State Machine is trying to switch to {type} state but the state is not added to the GameObject");
         }
         /// <summary>
         /// Checks and executes transitions for the current state.
