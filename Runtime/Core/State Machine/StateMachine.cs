@@ -16,6 +16,9 @@ namespace Popieyes.AI
         public State<T> CurrentState => _currentState;
         private List<Transition> _transitions = new List<Transition>(); 
         
+        #region Events
+        public Action<State<T>> StateChangedEvent;
+        #endregion
        
         #region UNITY CALLBACKS
         void Awake()
@@ -84,7 +87,7 @@ namespace Popieyes.AI
         /// Switches to the specified state type.
         /// </summary>
         /// <typeparam name="T">The type of the state to switch to.</typeparam>
-        private void SwitchState<U>() where U : State<T>
+        public void SwitchState<U>() where U : State<T>
         {
             SwitchState(typeof(U));
         }
@@ -92,7 +95,7 @@ namespace Popieyes.AI
         /// Switches to the specified state type.
         /// </summary>
         /// <param name="type">The type of the state to switch to.</param>
-        private void SwitchState(Type type)
+        public void SwitchState(Type type)
         {
             if(_currentState != null && _currentState.GetType() == type)
                 return;
@@ -101,6 +104,7 @@ namespace Popieyes.AI
                 _currentState?.OnExit();
                 _currentState = newState;
                 _currentState.OnEnter();
+                StateChangedEvent?.Invoke(_currentState);
             }
             else Debug.LogError($"{name}'s State Machine is trying to switch to {type} state but the state is not added to the GameObject");
         }
